@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 import './DocumentManager.css';
 import UploadButton from './components/UploadButton';
