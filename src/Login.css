@@ -1,0 +1,206 @@
+/* Modern styling for Login */
+
+.login-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+  background: #f0f2f5;
+  width: 100vw;
+  overflow: hidden;
+  padding: 0;
+}
+
+body, html {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Hide scrollbars for login page */
+.login-container::-webkit-scrollbar {
+  display: none;
+}
+.login-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.login-animated-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Book images for background */
+.login-books-bg {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 420px;
+  height: 120px;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  pointer-events: none;
+  opacity: 0.18;
+}
+.login-books-bg img {
+  height: 100px;
+  margin: 0 8px;
+  filter: drop-shadow(0 4px 12px rgba(101, 197, 238, 0.533)) grayscale(0.2) brightness(0.95);
+  transition: transform 0.3s;
+}
+.login-books-bg img:hover {
+  transform: scale(1.05) rotate(-2deg);
+}
+.login-bubble {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.18;
+  filter: blur(2px);
+  animation: float-bubble 8s infinite alternate;
+}
+.bubble1 {
+  width: 180px; height: 180px;
+  background: #4f8cff;
+  left: -60px; top: 10%;
+  animation-delay: 0s;
+}
+.bubble2 {
+  width: 120px; height: 120px;
+  background: #38e8ff;
+  right: -40px; top: 60%;
+  animation-delay: 2s;
+}
+.bubble3 {
+  width: 90px; height: 90px;
+  background: #4f8cff;
+  left: 60%; top: -40px;
+  animation-delay: 4s;
+}
+@keyframes float-bubble {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(40px) scale(1.08); }
+}
+
+.login-form.animated-form {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  min-width: 340px;
+  width: 370px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  z-index: 1;
+  animation: fadeInUp 0.8s cubic-bezier(.39,.575,.56,1.000);
+  margin-top: 0;
+  border: none;
+}
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(40px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.login-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.login-title {
+  margin: 0 0 0.7rem 0;
+  color: #1877f2;
+  font-weight: 700;
+  font-size: 2rem;
+  text-align: center;
+  letter-spacing: 0;
+  user-select: none;
+  cursor: default;
+}
+.login-input {
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  padding: 0.9rem 0.8rem;
+  font-size: 1.08rem;
+  transition: border 0.2s;
+  background: #f5f6fa;
+}
+.login-input:focus {
+  border: 1.5px solid #1877f2;
+  outline: none;
+}
+.login-btn {
+  background: #1877f2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.9rem 0;
+  font-weight: 700;
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(24,119,242,0.10);
+  margin-top: 0.5rem;
+}
+.login-btn:hover {
+  background: #166fe5;
+  box-shadow: 0 4px 16px rgba(24,119,242,0.13);
+}
+.toggle-link {
+  text-align: center;
+  color: #1877f2;
+  font-size: 1.05rem;
+  cursor: pointer;
+  margin-top: 0.7rem;
+  font-weight: 500;
+}
+.toggle-link span:hover {
+  text-decoration: underline;
+}
+.error-msg {
+  color: #e53935;
+  font-size: 1.01rem;
+  margin-bottom: -0.5rem;
+  margin-top: -0.5rem;
+  text-align: left;
+  font-weight: 500;
+}
+
+/* Facebook-like left side info */
+.login-info-panel {
+  flex: 1 1 0%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding-right: 3.5rem;
+  min-width: 350px;
+  max-width: 500px;
+  margin-left: -40px; /* Move panel to the left for more space */
+}
+.login-info-title {
+  color: #1877f2;
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  letter-spacing: -1px;
+  line-height: 1.1;
+  user-select: none;
+  cursor: default;
+}
+.login-info-desc {
+  color: #050505;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.3;
+  user-select: none;
+  cursor: default;
+}
