@@ -3,7 +3,7 @@ import './Login.css';
 
 // Simple in-memory user store with password encryption (base64 for demo)
 const encrypt = (str) => btoa(str);
-const decrypt = (str) => atob(str);
+// Removed unused decrypt function
 
 const userDB = {};
 

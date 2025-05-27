@@ -19,7 +19,7 @@ function DocumentManager({ currentUser, searchTerm, setSearchTerm }) {
   const [showAddText, setShowAddText] = useState(false);
   const [textTitle, setTextTitle] = useState('');
   const [textContent, setTextContent] = useState('');
-  const [file, setFile] = useState(null);
+  // Removed unused file and setFile state
   const [editDocId, setEditDocId] = useState(null);
   const [editContent, setEditContent] = useState('');
 
