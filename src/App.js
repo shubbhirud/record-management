@@ -4,6 +4,8 @@ import Login from './Login';
 import DocumentManager from './DocumentManager';
 
 
+import { auth } from './firebase';
+
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -11,14 +13,15 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        {/* Welcome banner removed as requested */}
         {currentUser ? (
           <>
             <div className="user-bar">
               <span>Welcome, <b>{currentUser}</b></span>
-              <button className="logout-btn" onClick={() => setCurrentUser(null)}>Logout</button>
+              <button className="logout-btn" onClick={() => {
+                setCurrentUser(null);
+                if (auth.currentUser) auth.signOut();
+              }}>Logout</button>
             </div>
-            {/* Search bar below user bar, above DocumentManager */}
             <div className="search-bar-container">
               <input
                 type="text"

@@ -1,6 +1,6 @@
 import React from 'react';
 
-function AddTextForm({ textTitle, setTextTitle, textContent, setTextContent, handleAddText }) {
+function AddTextForm({ textTitle, setTextTitle, textContent, setTextContent, handleAddText, handleCancel }) {
   return (
     <div className="add-text-form">
       <input
@@ -14,7 +14,10 @@ function AddTextForm({ textTitle, setTextTitle, textContent, setTextContent, han
         value={textContent}
         onChange={e => setTextContent(e.target.value)}
       />
-      <button onClick={handleAddText}>Save</button>
+      <div style={{ display: 'flex', gap: '0.7rem', justifyContent: 'flex-end' }}>
+        <button onClick={handleCancel} type="button" style={{ background: '#e53935' }}>Cancel</button>
+        <button onClick={handleAddText}>Save</button>
+      </div>
     </div>
   );
 }

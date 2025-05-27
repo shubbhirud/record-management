@@ -1,32 +1,46 @@
 
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import './DocumentManager.css';
 import UploadButton from './components/UploadButton';
 import AddTextForm from './components/AddTextForm';
 import DocumentList from './components/DocumentList';
+import { db, auth } from './firebase';
+import {
+  collection,
+  addDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  doc,
+  query,
+  where,
+  orderBy
+} from 'firebase/firestore';
+import { onSnapshot } from 'firebase/firestore';
+
 
 function DocumentManager({ currentUser, searchTerm, setSearchTerm }) {
-  // Use a global key for all documents
-  const storageKey = 'all_docs';
-  const [documents, setDocuments] = useState(() => {
-    try {
-      const saved = localStorage.getItem(storageKey);
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+  const [documents, setDocuments] = useState([]);
   const [showAddText, setShowAddText] = useState(false);
   const [textTitle, setTextTitle] = useState('');
   const [textContent, setTextContent] = useState('');
-  // Removed unused file and setFile state
   const [editDocId, setEditDocId] = useState(null);
   const [editContent, setEditContent] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  // Save documents to localStorage whenever they change
-  React.useEffect(() => {
-    localStorage.setItem(storageKey, JSON.stringify(documents));
-  }, [documents]);
+  // Real-time Firestore listener
+  useEffect(() => {
+    setLoading(true);
+    const q = query(collection(db, 'documents'), orderBy('created', 'desc'));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      setDocuments(querySnapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() })));
+      setLoading(false);
+    }, (err) => {
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
 
 
@@ -40,62 +54,62 @@ function DocumentManager({ currentUser, searchTerm, setSearchTerm }) {
     );
   };
 
-  // Handle file upload
-  const handleFileUpload = (e) => {
+
+  // Handle file upload (store as base64 string in Firestore)
+  const handleFileUpload = async (e) => {
     const uploadedFile = e.target.files[0];
     if (uploadedFile) {
       const reader = new FileReader();
-      reader.onload = (event) => {
-        setDocuments(prev => [
-          ...prev,
-          {
-            id: Date.now(),
-            type: 'file',
-            name: uploadedFile.name,
-            content: event.target.result,
-            owner: currentUser,
-          },
-        ]);
+      reader.onload = async (event) => {
+        await addDoc(collection(db, 'documents'), {
+          type: 'file',
+          name: uploadedFile.name,
+          content: event.target.result,
+          owner: auth.currentUser ? auth.currentUser.email : currentUser,
+          created: Date.now(),
+        });
       };
       reader.readAsDataURL(uploadedFile);
     }
   };
 
+
   // Handle add text as document
-  const handleAddText = () => {
+  const handleAddText = async () => {
     if (textTitle && textContent) {
-      setDocuments(prev => [
-        ...prev,
-        {
-          id: Date.now(),
-          type: 'text',
-          name: textTitle,
-          content: textContent,
-          owner: currentUser,
-        },
-      ]);
+      await addDoc(collection(db, 'documents'), {
+        type: 'text',
+        name: textTitle,
+        content: textContent,
+        owner: auth.currentUser ? auth.currentUser.email : currentUser,
+        created: Date.now(),
+      });
       setTextTitle('');
       setTextContent('');
       setShowAddText(false);
     }
   };
 
+
   // Handle delete document
-  const handleDelete = (id) => {
-    setDocuments(prev => prev.filter(doc => doc.id !== id));
+  const handleDelete = async (id) => {
+    await deleteDoc(doc(db, 'documents', id));
   };
+
 
   // Handle edit document
-  const handleEdit = (doc) => {
-    setEditDocId(doc.id);
-    setEditContent(doc.content);
+  const handleEdit = (docObj) => {
+    setEditDocId(docObj.id);
+    setEditContent(docObj.content);
   };
 
-  const handleSaveEdit = (id) => {
-    setDocuments(prev => prev.map(doc => doc.id === id ? { ...doc, content: editContent } : doc));
+  const handleSaveEdit = async (id) => {
+    const docRef = doc(db, 'documents', id);
+    await updateDoc(docRef, { content: editContent });
     setEditDocId(null);
     setEditContent('');
   };
+
 
   // Split documents into "My Documents" and "Other Documents"
   const myDocuments = documents.filter(doc => doc.owner === currentUser);
@@ -110,8 +124,8 @@ function DocumentManager({ currentUser, searchTerm, setSearchTerm }) {
         <h2>My Documents</h2>
         <div className="doc-actions">
           <UploadButton handleFileUpload={handleFileUpload} />
-          <button className="add-text-btn" onClick={() => setShowAddText(!showAddText)}>
-            {showAddText ? 'Cancel' : 'Add Text'}
+          <button className="add-text-btn" onClick={() => setShowAddText(true)}>
+            Add Text
           </button>
         </div>
         {showAddText && (
@@ -121,6 +135,7 @@ function DocumentManager({ currentUser, searchTerm, setSearchTerm }) {
             textContent={textContent}
             setTextContent={setTextContent}
             handleAddText={handleAddText}
+            handleCancel={() => setShowAddText(false)}
           />
         )}
         <DocumentList
